@@ -17,3 +17,10 @@ export async function getPostById(id) {
 
   return result ?? "Post não encontrado";
 };
+
+export async function createPost(newPost) {
+  const database = conection.db("photogram");
+  const postsCollection = database.collection("posts");
+
+  return postsCollection.insertOne(newPost);
+};
