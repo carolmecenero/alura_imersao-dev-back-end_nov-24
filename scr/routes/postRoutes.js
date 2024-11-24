@@ -1,8 +1,9 @@
 // Import libraries
 import express from 'express';
 import multer from 'multer';
+import cors from 'cors';
 // Import internal code
-import { createNewPost, listAllPosts, listPostById } from '../controller/postController.js';
+import { listAllPosts, listPostById, createNewPost, updateThisPost, updateThisPostWithAi } from '../controllers/postController.js';
 
 // Configura o armazenamento do Multer para uploads de imagens no Windowns
 const storage = multer.diskStorage({
@@ -17,8 +18,14 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+const corsOptions = {
+  origin: "http://localhost:8000",
+  optionsSuccessStatus: 200,
+};
+
 const routes = (app) => {
   app.use(express.json());
+  app.use(cors(corsOptions));
 
   // Acessar todos os "posts"
   app.get('/posts', listAllPosts);
@@ -28,6 +35,10 @@ const routes = (app) => {
 
   // Criar um novo "post"
   app.post('/post/create', upload.single("image_url"), createNewPost);
+
+  app.put('/post/update/:id', upload.none(), updateThisPost);
+
+  app.put('/post/update-with-ai/:id', upload.none(), updateThisPostWithAi);
 };
 
 export default routes;
